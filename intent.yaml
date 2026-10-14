@@ -1,0 +1,580 @@
+# vf-workshops - the app's CSD-INTENT-01 claims (REF-CSD.md section 3).
+#
+# INT-WORKSHOPS-001 is the walking skeleton's shipped claim and stays
+# active and unrevved: its statement is still true of the engine's browser
+# surface, and only its attesting test moves when the static page becomes the
+# SPA document (`.delivery/handoff.md` section 2 pins that).
+#
+# Everything from 002 is the P1 delivery's claim set, authored in the
+# intent+plan phase against the twenty requirement IDs in
+# `.delivery/proposal.md` (REF-Delivery.md section 4a). Each carries
+# `derived_from` with the requirement IDs it attests. They ship `draft`:
+# the claim is written, the test is not, and each is activated by the build
+# when its test passes (the done-definition is all claims active).
+#
+# The requirement-to-claim map, and the descope column, live in
+# `.delivery/handoff.md` section 5. Every one of the twenty maps here; none
+# is silently dropped.
+
+INT-WORKSHOPS-001:
+    version: 1.0.0
+    status: active
+    statement: "The app serves its landing page at the root path."
+    rationale: "The walking skeleton ships serving from day one."
+    test:
+        scope: integration
+        component: WalkingSkeleton
+        type: invariant
+    criticality: medium
+
+# --- The engine, as delivered -------------------------------------------
+
+INT-WORKSHOPS-002:
+    version: 1.0.0
+    status: active
+    statement: "The engine is installed on the Foundry under the slug
+        vf-workshops: its browser surface answers at the app's own hostname
+        and its docs site serves under /apps/vf-workshops."
+    rationale: "ENG-001 is a delivered-and-reachable fact, not a repo fact.
+        The app-repo contract half of ARCH-002 is attested operationally by
+        the shared CI conformance suite, which owns those checks in the ci
+        repo (REF-Foundry.md section 7); duplicating them as app claims is the
+        parallel-maintained copy that REF-Foundry forbids."
+    derived_from: [ENG-001, ARCH-002]
+    test:
+        scope: e2e
+        component: FoundryInstall
+        type: invariant
+    criticality: high
+
+INT-WORKSHOPS-003:
+    version: 1.0.0
+    status: active
+    statement: "The schema validator accepts exactly the six activity kinds
+        frame, collect, walk, sort, assign and close, and refuses any other
+        kind."
+    rationale: "ENG-002's vocabulary is closed (ASM-010): a seventh kind is a
+        playbook change to REF-Workshop.md section 2, never a data value the
+        engine quietly admits."
+    derived_from: [ENG-002, STORE-003]
+    test:
+        scope: unit
+        component: SchemaValidator
+        type: invariant
+    criticality: critical
+
+INT-WORKSHOPS-004:
+    version: 1.0.0
+    status: active
+    statement: "A session carrying all six activity kinds runs end to end:
+        each kind renders its own room surface, records its own capture shape
+        (frame records none), and appears in the close read-back."
+    rationale: "ENG-002 asks the six kinds be carried end to end, not merely
+        stored. A type is a triple (contract, surface, capture) and this is
+        the claim that the whole triple ships for each of the six."
+    derived_from: [ENG-002, RUN-001, RUN-002]
+    test:
+        scope: e2e
+        component: TypedActivityPipeline
+        type: behavior
+    criticality: critical
+
+INT-WORKSHOPS-005:
+    version: 1.0.0
+    status: active
+    statement: "Every capability REF-Workshop section 8 names for a workshops
+        engine - store and version a session, author it, run both projections,
+        serve the dataset, export the standalone artifact, land a capture - is
+        reachable through the engine's own doors, so producing a runnable
+        workshop requires no standalone scaffolding step."
+    rationale: "ENG-003 is the managed-path claim: vf-workshops replaces
+        bootstrap-workshop as the way a workshop is produced, the way
+        vf-library replaced standalone flyers."
+    derived_from: [ENG-003]
+    test:
+        scope: e2e
+        component: ManagedPath
+        type: behavior
+    criticality: high
+
+# --- The store ----------------------------------------------------------
+
+INT-WORKSHOPS-006:
+    version: 1.0.0
+    status: active
+    statement: "Saving a revision appends: every prior revision of a session
+        stays retrievable at its own revision number, and no write path
+        updates or deletes a stored revision."
+    rationale: "STORE-001's append-only guarantee is the shelf principle
+        vf-library established. The falsifiable form is that a write path
+        that mutates a stored revision does not exist."
+    derived_from: [STORE-001]
+    test:
+        scope: integration
+        component: SessionStore
+        type: invariant
+    criticality: critical
+
+INT-WORKSHOPS-007:
+    version: 1.0.0
+    status: active
+    statement: "A session carries exactly one shelf state from ephemeral,
+        draft and published; it is created ephemeral, becomes draft on its
+        first saved revision and published on its first successful publish,
+        and no transition runs backwards."
+    rationale: "STORE-002 names ephemeral and draft; published is the third
+        state the approved shelf screen counts. The ordering is the handoff's
+        pinned assumption, recorded there rather than left to the build."
+    derived_from: [STORE-002]
+    test:
+        scope: integration
+        component: ShelfLifecycle
+        type: invariant
+    criticality: high
+
+INT-WORKSHOPS-008:
+    version: 1.0.0
+    status: active
+    statement: "The schema validator enforces the whole REF-Workshop section 3
+        contract: meta's ten fields, the six per-kind content contracts, the
+        room and facilitator split, timeboxes summing to meta.duration, one
+        fact per field, verdict and bucket tones drawn from the ok/mid/hot
+        trio, and the queue and trail length ceiling."
+    rationale: "STORE-003 names the WHOLE schema, not a subset. The
+        approved author screen shows the panel reporting each of these rows
+        separately, so each is separately falsifiable."
+    derived_from: [STORE-003]
+    test:
+        scope: unit
+        component: SchemaValidator
+        type: invariant
+    criticality: critical
+
+INT-WORKSHOPS-009:
+    version: 1.0.0
+    status: active
+    statement: "Every write door - UI, API and MCP - validates a revision
+        through the same validator before storing it, and a revision that
+        fails validation is stored by none of them."
+    rationale: "STORE-003 says every write door. A validator only the UI calls
+        leaves the API and MCP doors as the way to write an invalid session,
+        which is the door-only gap DOOR-003 forbids in the other direction."
+    derived_from: [STORE-003, DOOR-003]
+    test:
+        scope: integration
+        component: WriteDoors
+        type: invariant
+    criticality: critical
+
+# --- Authoring ----------------------------------------------------------
+
+INT-WORKSHOPS-010:
+    version: 1.0.0
+    status: active
+    statement: "A person creates a session, edits its activities and saves a
+        revision entirely through the browser UI with no agent and no other
+        door involved, and the schema panel re-evaluates on each change so a
+        violation is visible while it is being made rather than at save."
+    rationale: "AUTHOR-001 is the no-agent claim: the human path must be
+        complete on its own. The re-evaluation timing is the approved
+        interaction model in .delivery/design.md, asserted here because it is
+        behaviour the claims own, not look."
+    derived_from: [AUTHOR-001]
+    test:
+        scope: e2e
+        component: AuthoringUI
+        type: behavior
+    criticality: critical
+
+# --- Running ------------------------------------------------------------
+
+INT-WORKSHOPS-011:
+    version: 1.0.0
+    status: active
+    statement: "Starting a run from the UI opens both projections of the same
+        revision - the room surfaces and the facilitator script - with the
+        script reachable only deliberately and never the landing view."
+    rationale: "RUN-001 asks for both projections live. The gating is
+        REF-Workshop.md section 1's hard separation: an internal layer reached
+        by accident is a defect, so the claim asserts the gate, not just the
+        presence of two views."
+    derived_from: [RUN-001]
+    test:
+        scope: e2e
+        component: Projections
+        type: behavior
+    criticality: critical
+
+INT-WORKSHOPS-012:
+    version: 1.0.0
+    status: active
+    statement: "Outcomes recorded on the room surface during a run appear
+        inline in the facilitator script and in the close read-back, and
+        survive a page refresh."
+    rationale: "RUN-002 per REF-Workshop.md section 4: the surface is the
+        record. Local persistence is what makes a refresh survivable without a
+        network (REF-Workshop.md section 6)."
+    derived_from: [RUN-002]
+    test:
+        scope: e2e
+        component: LiveCapture
+        type: behavior
+    criticality: critical
+
+INT-WORKSHOPS-013:
+    version: 1.0.0
+    status: active
+    statement: "A landed capture is persisted server-side against its run, so
+        a capture recorded in one browser context is readable through the API
+        and MCP doors without that context."
+    rationale: "The counterpart of 012: 012 is the instrument's local state,
+        this is the engine's record. ASM-011 pins that the capture lands
+        rather than streams, so the two reconcile at the landing."
+    derived_from: [RUN-002]
+    test:
+        scope: integration
+        component: CaptureStore
+        type: invariant
+    criticality: high
+
+INT-WORKSHOPS-014:
+    version: 1.0.0
+    status: active
+    statement: "A run is either a rehearsal or a session and says which at all
+        times; each run records its own capture and produces its own export,
+        and neither kind's capture is merged into or overwritten by the
+        other's."
+    rationale: "RUN-003. Rehearsal exists to be thrown away without touching
+        the session that follows it, which only holds if the two are separate
+        records rather than one run re-opened."
+    derived_from: [RUN-003]
+    test:
+        scope: integration
+        component: RunRegistry
+        type: invariant
+    criticality: high
+
+INT-WORKSHOPS-015:
+    version: 1.0.0
+    status: active
+    statement: "Closing a run freezes it: after the close every write to that
+        run's capture or artifact is refused through all three doors, and its
+        stored capture and artifact bytes stay unchanged."
+    rationale: "RUN-004, the workshop stands as run (REF-Workshop.md
+        anti-pattern 5). ASM-012 pins that closing is the explicit act that
+        freezes. Refused through ALL three doors, or the API is the way to
+        edit history."
+    derived_from: [RUN-004]
+    test:
+        scope: integration
+        component: RunRegistry
+        type: invariant
+    criticality: critical
+
+# --- Export and publish -------------------------------------------------
+
+INT-WORKSHOPS-016:
+    version: 1.0.0
+    status: active
+    statement: "The export of a session revision is one self-contained HTML
+        file carrying that revision's dataset and the fixed inline renderer,
+        and its sha256 equals a fresh render of the same revision by the
+        pinned canonical renderer."
+    rationale: "EXP-001 read as ASM-002 pins byte-identity: byte for byte what
+        the canonical renderer produces for that revision, asserted by
+        checksum. Equality against a fresh render is the falsifiable form; a
+        stored checksum compared against itself is not."
+    derived_from: [EXP-001]
+    test:
+        scope: integration
+        component: ExportRenderer
+        type: invariant
+    criticality: critical
+
+INT-WORKSHOPS-017:
+    version: 1.0.0
+    status: active
+    statement: "The engine renders only through the bootstrap-workshop
+        template consumed as a pinned, checksummed dependency: the repository
+        carries no copy or fork of that template, and each export records the
+        renderer version it was produced by."
+    rationale: "EXP-002 and ASM-001. Divergence is a playbook change first, so
+        the claim is that no fork exists in this tree - a source fact a test
+        can decide - rather than an intention."
+    derived_from: [EXP-002]
+    test:
+        scope: unit
+        component: RendererDependency
+        type: invariant
+    criticality: critical
+
+INT-WORKSHOPS-018:
+    version: 1.0.0
+    status: draft
+    statement: "Publishing an export writes it to the git-backed home at the
+        configured path and leaves the session store byte-unchanged: a publish
+        writes no revision, capture or run row."
+    rationale: "EXP-003, the vf-library principle that publish exports and
+        never mutates the store. The store-unchanged half is the one a build
+        drops silently, so it is stated in the claim."
+    derived_from: [EXP-003]
+    test:
+        scope: integration
+        component: GitHomePublisher
+        type: invariant
+    criticality: critical
+
+# --- The three doors ----------------------------------------------------
+
+INT-WORKSHOPS-019:
+    version: 1.0.0
+    status: active
+    statement: "The HTTP API door exposes every inbound port of the core and
+        serves both a session revision's dataset and its exported artifact at
+        the routes the handoff pins."
+    rationale: "DOOR-001. The approved doors screen is the pinned route table;
+        the claim binds the door to the port set rather than to a route count
+        that would drift."
+    derived_from: [DOOR-001]
+    test:
+        scope: integration
+        component: ApiDoor
+        type: contract
+    criticality: critical
+
+INT-WORKSHOPS-020:
+    version: 1.0.0
+    status: active
+    statement: "The MCP door exposes one tool per inbound port over streamable
+        HTTP, and for the same input each tool returns the same result as the
+        API door's corresponding route."
+    rationale: "DOOR-002 and ASM-014. Mirroring is only meaningful as
+        equivalence of result; two doors that both exist but disagree are the
+        failure this claim exists to catch."
+    derived_from: [DOOR-002]
+    test:
+        scope: integration
+        component: McpDoor
+        type: contract
+    criticality: critical
+
+INT-WORKSHOPS-021:
+    version: 1.0.0
+    status: active
+    statement: "The UI, API and MCP doors are adapters over one inbound port
+        set: every port in the set is reachable through all three doors, and
+        no door exposes a capability the other two cannot reach."
+    rationale: "DOOR-003, and the approved doors screen states it as the
+        falsifiable form: a door carrying a capability the other two lack
+        shows as a gap in its column."
+    derived_from: [DOOR-003]
+    test:
+        scope: integration
+        component: InboundPorts
+        type: invariant
+    criticality: critical
+
+# --- Architecture -------------------------------------------------------
+
+INT-WORKSHOPS-022:
+    version: 1.0.0
+    status: active
+    statement: "The application core depends on no adapter: no module inside
+        the core imports a door, the store or the renderer, and every adapter
+        reaches the core only through a declared inbound or outbound port."
+    rationale: "ARCH-001. Hexagonality is an import-graph fact, so it is
+        decided by reading the import graph rather than by reviewing a
+        diagram."
+    derived_from: [ARCH-001]
+    test:
+        scope: unit
+        component: CoreBoundary
+        type: invariant
+    criticality: high
+
+# --- Interop ------------------------------------------------------------
+
+INT-WORKSHOPS-023:
+    version: 1.0.0
+    status: active
+    statement: "The capture's plan export carries each captured item under the
+        REF-Plan section 3 item id it was authored with, verbatim, with no
+        rewriting, prefixing or renumbering."
+    rationale: "PLAN-001 and REF-Workshop.md section 3: item ids are the
+        plan's ids verbatim so capture lands without translation. ASM-013
+        pins this as export-toward, so the claim is about the artifact's ids,
+        never a write into a plan instance."
+    derived_from: [PLAN-001]
+    test:
+        scope: integration
+        component: PlanExport
+        type: invariant
+    criticality: high
+
+# --- Identity (ASM-006 prices a realm, so a sign-in claim is owed) -------
+
+INT-WORKSHOPS-024:
+    version: 1.0.0
+    status: active
+    statement: "A realm-local test user signs in to the engine's browser
+        surface through the deployed vf-workshops realm and reaches the
+        shelf."
+    rationale: "REF-Delivery.md section 4a: a priced identity realm prices a
+        positive sign-in claim, one per shipped shell, attested against the
+        DEPLOYED realm - the failures it catches (a confidential client
+        answering a public flow, an unregistered redirect URI) live in the
+        realm's own config, where a mock passes and the shipped app still
+        cannot sign in. The engine's browser surface is this delivery's one
+        shipped shell."
+    derived_from: [ARCH-002]
+    test:
+        scope: e2e
+        component: IdentityRoundTrip
+        type: behavior
+    criticality: critical
+
+INT-WORKSHOPS-025:
+    version: 1.0.0
+    status: active
+    statement: "The deployed engine refuses unauthenticated traffic on every
+        human surface, and its MCP door refuses a request carrying no
+        credential."
+    rationale: "ASM-006's private-by-default posture, and the fail-closed
+        contract of REF-Foundry.md section 4. This is the complement of 024,
+        never its substitute: failing closed and a user getting in are
+        different propositions and both can be wrong independently."
+    derived_from: [ARCH-002, DOOR-001, DOOR-002]
+    test:
+        scope: e2e
+        component: FailClosed
+        type: invariant
+    criticality: critical
+
+# --- Quality bars the design gate locked (REF-Delivery.md anti-pattern 31:
+#     quality bars are attested as claims, never as a docs/quality.md) -----
+
+INT-WORKSHOPS-026:
+    version: 1.0.0
+    status: active
+    statement: "Every engine surface meets the locked accessibility bar: each
+        control is keyboard reachable and operable with a visible focus ring,
+        and an automated accessibility scan of the shelf, author, run console
+        and capture screens reports no serious or critical violation."
+    rationale: "The bar and its measured contrast ratios are locked in
+        .delivery/design.md. A bar attested nowhere is a bar the build meets
+        by assertion."
+    derived_from: [AUTHOR-001, RUN-001]
+    test:
+        scope: e2e
+        component: Accessibility
+        type: invariant
+    criticality: high
+
+INT-WORKSHOPS-027:
+    version: 1.1.0
+    status: active
+    statement: "The Vodafone Portugal Digital type roles are applied at their pinned
+        uses: the self-hosted Vodafone face on session titles, activity names, prose and UI;
+        the Cascadia Code, Consolas, monospace system stack on ids, revisions,
+        offsets, timeboxes and checksums. The Vodafone face is served beside the app.
+        The embedded workshop artifact's
+        own document is out of scope: it is the canonical renderer's, and it
+        keeps that renderer's own font host."
+    rationale: "REF-Delivery.md anti-pattern 34: a build that ships every
+        surface on the system-ui fallback passes a review that only confirms
+        a font renders. The claim asserts the PINNED face at its pinned use,
+        which is what an automated check can decide. Scoped to the engine's own
+        documents because EXP-001 byte-identity and EXP-002 both forbid
+        touching the artifact's font link (ASM-P08; registered ASM-004 governs
+        the artifact and stands unchanged)."
+    derived_from: [ENG-001]
+    test:
+        scope: e2e
+        component: Typography
+        type: invariant
+    criticality: medium
+
+INT-WORKSHOPS-028:
+    version: 1.1.0
+    status: active
+    statement: "The workshop artifact embedded in the run console's Stage
+        panel paints its own grounds: the room resolves to the artifact's
+        Dark stage token and the script to its Light paper token, unchanged
+        by either application appearance or the operating system's theme."
+    rationale: "REF-Workshop.md anti-pattern 10 and .delivery/design.md's art
+        direction. The design record warns that the prototype's inverted Stage
+        panel is a stand-in the build must not copy literally; this is the
+        mechanical form of the design's own falsifiable test."
+    derived_from: [RUN-001]
+    test:
+        scope: e2e
+        component: StageEmbed
+        type: invariant
+    criticality: high
+
+# --- Mechanisms the plan review's blockers forced into the plan. Both are
+#     unit-scope guards over a coupling that would otherwise fail silently.
+
+INT-WORKSHOPS-029:
+    version: 1.0.0
+    status: active
+    statement: "The capture bridge derives the embedded artifact's local-state
+        key by the same rule the pinned canonical renderer uses, verified
+        against that renderer's source at the hash recorded in renderer.lock."
+    rationale: "ADR-007. The renderer exposes no channel and may not be
+        modified (EXP-002), so the engine reads the artifact's own local state
+        same-origin. That coupling is real; this claim makes it PINNED rather
+        than hidden - if the renderer ever moves its key, the build fails at
+        the same hash that already guards byte-identity, instead of silently
+        capturing nothing."
+    derived_from: [RUN-002, EXP-002]
+    test:
+        scope: unit
+        component: CaptureBridge
+        type: invariant
+    criticality: critical
+
+INT-WORKSHOPS-030:
+    version: 1.0.0
+    status: active
+    statement: "The git-home publisher refuses any ref but the configured home
+        ref: a configured target outside the home ref, and any attempt to push
+        another ref, is refused before a network connection is opened."
+    rationale: "ADR-009 and ASM-P09. The publisher holds a repository-scoped
+        write credential, so the token's scope alone would leave a publish-path
+        defect a route into the release train. The guard is in the code, which
+        holds even if the credential is later widened."
+    derived_from: [EXP-003]
+    test:
+        scope: unit
+        component: GitHomePublisher
+        type: invariant
+    criticality: critical
+
+INT-WORKSHOPS-031:
+    version: 1.0.0
+    status: active
+    statement: "No run's capture reaches another run of the same session
+        revision, in either order of arrival: a rehearsal's outcomes never
+        reach the session run that follows it, and a second live mount of a
+        revision already open is refused rather than allowed to cross-write.
+        The run console seeds the embedded artifact's storage slot from that
+        run's own capture once per mount before it boots, lands every
+        subsequent write as it happens, and clears the slot when the run is
+        left, so each run starts from and keeps its own record."
+    rationale: "The canonical renderer keys its local state on the session
+        revision alone, with no run identity, and localStorage is one area per
+        origin - so a same-origin embed would hand the session run whatever
+        the rehearsal left behind, and two live mounts of one revision would
+        cross-write whatever the landing cadence (ADR-007). RUN-003 and claim
+        014 forbid exactly that, but 014 is an integration claim over the
+        server-side run registry and would stay green while the browser merged
+        the two. This is the claim that can see it. The sequential half and
+        the concurrent half are one proposition with two triggers, so they are
+        attested together rather than leaving the second unclaimed."
+    derived_from: [RUN-002, RUN-003]
+    test:
+        scope: e2e
+        component: CaptureBridge
+        type: behavior
+    criticality: critical

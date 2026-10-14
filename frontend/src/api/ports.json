@@ -1,0 +1,11 @@
+{
+  "CreateSession": ["POST /api/sessions"],
+  "ReviseSession": ["POST /api/sessions/{session_id}/revisions", "POST /api/validate"],
+  "ReadSession": ["GET /api/sessions", "GET /api/sessions/{session_id}", "GET /api/sessions/{session_id}/revisions", "GET /api/sessions/{session_id}/revisions/{number}"],
+  "StartRun": ["POST /api/sessions/{session_id}/runs"],
+  "LandCapture": ["POST /api/runs/{run_id}/capture"],
+  "ReadRun": ["GET /api/runs", "GET /api/runs/{run_id}", "GET /api/runs/{run_id}/artifact"],
+  "ExportArtifact": ["GET /api/sessions/{session_id}/export"],
+  "ExportPlan": ["GET /api/runs/{run_id}/plan-export"],
+  "PublishExport": ["POST /api/sessions/{session_id}/publish", "GET /api/publications"]
+}

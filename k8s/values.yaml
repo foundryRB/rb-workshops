@@ -1,0 +1,118 @@
+# Chart defaults. The deploy-<install> branch nests these under `vf-workshops:` (the
+# chart ships as a dependency) and pins the served tags; Image Updater
+# advances them there (ADR-022). `host` stays empty here on purpose: the
+# hostname is per install and lands in the deploy branch's values
+# (install-agnostic chart, INT-FOUNDRY-046).
+paused: false
+host: ""
+# The app container's port: the Deployment's containerPort and PORT, the
+# oauth2-proxy sidecar's --upstream, and the Service's target on the ungated path.
+port: 8000
+gateway:
+    name: vf-workshops
+    namespace: network
+imagePullSecrets:
+    - name: ghcr-pull
+images:
+    app:
+        repository: ghcr.io/vfpt-vodafone-foundry/vf-workshops-app
+        tag: latest
+    smoke:
+        repository: ghcr.io/vfpt-vodafone-foundry/vf-workshops-smoke
+        tag: latest
+    docs:
+        repository: ghcr.io/vfpt-vodafone-foundry/vf-workshops-docs
+        tag: latest
+
+# Capability wiring, off until the matching grant exists. Each block names
+# credentials only the platform can mint, so the names are not this chart's to
+# choose: `keycloak-vf-workshops`, `pg-app-vf-workshops`, `nats-vf-workshops` and `nats-jwt-vf-workshops`
+# are what the grants' Jobs create in this namespace, and the key names below
+# are the keys those Jobs set. They are rendered here, correct, at scaffold
+# time rather than authored later against a grant's prose, because an invented
+# name schedules a pod that waits on a Secret nothing will ever create
+# (knight-fight shipped `vf-workshops-oidc` and `vf-workshops-db` and served 503 for sixteen
+# hours).
+#
+# To adopt a granted capability, flip `enabled` to true - and change nothing
+# else here. The conformance suite reads these values: it refuses an app whose
+# install manifest carries a grant that its chart does not name.
+auth:
+    oidc:
+        # foundry-onboard-keycloak. The sidecar reads clientSecret/cookieSecret
+        # out of this Secret; map them key by key onto OAUTH2_PROXY_CLIENT_SECRET
+        # and OAUTH2_PROXY_COOKIE_SECRET, never with envFrom, whose variable
+        # names would be the Secret's keys rather than the ones the proxy reads.
+        enabled: false
+        existingSecret: keycloak-vf-workshops
+        clientId: vf-workshops
+        issuer: ""
+    proxyImage: quay.io/oauth2-proxy/oauth2-proxy:v7.7.1
+database:
+    # foundry-onboard-database. `host` is the shared cluster's read-write
+    # service; the per-app role password is under key `password`. `user`
+    # (the owner role) has no default here - it is the grant's, declared in
+    # the install's teams folder, and set on the deploy branch at onboarding;
+    # the app refuses to start on an empty value rather than connecting as
+    # an implicit identity.
+    enabled: false
+    host: shared-rw.databases.svc.cluster.local
+    port: 5432
+    name: vf-workshops
+    user: ""
+    existingSecret: pg-app-vf-workshops
+events:
+    # foundry-onboard-events. Two Secrets, because the grant keeps the private
+    # half home: `nats-vf-workshops` (key `seed`) is the keypair this app's own
+    # generator minted in this namespace, never reflected anywhere;
+    # `nats-jwt-vf-workshops` (key `user.jwt`) is the user JWT the platform signed for
+    # its public half and reflected back. The deployment assembles the two
+    # into the one credentials file a NATS client reads. `servers` is the
+    # bus's in-cluster address; it has no public one.
+    enabled: false
+    servers: nats://nats.messaging.svc.cluster.local:4222
+    seedSecret: nats-vf-workshops
+    jwtSecret: nats-jwt-vf-workshops
+
+# The renderer's runtime source (ADR-002): the template's bytes are fetched
+# at start from the playbook-studio door and verified against renderer.lock.
+# `url` is per install (the studio's public MCP door); the credential is an
+# external fact seeded out of band (k8s/secrets/vf-workshops-renderer-source.env.example),
+# an optional Secret: the engine serves everything but a render until it
+# exists, and says so on its doors page and its health route.
+renderer:
+    url: ""
+    existingSecret: vf-workshops-renderer-source
+
+# The git-backed home (ADR-005, ADR-009): the repository, ref and path are
+# configuration; the publisher's credential is a fine-grained PAT seeded out
+# of band (k8s/secrets/vf-workshops-githome.env.example) into an optional
+# Secret, so the engine serves everything but a publish until it exists.
+githome:
+    repository: VFPT-VODAFONE-FOUNDRY/adf-workshops
+    ref: home
+    path: "workshops/{session}/{revision}/"
+    existingSecret: vf-workshops-githome
+
+# The machine door's key (ADR-006): minted in this namespace by this chart's
+# own generate-if-absent Job (templates/mcp-key.yaml), never applied by hand.
+mcpKey:
+    secretName: vf-workshops-mcp-auth
+
+# The deployed smoke workload (ADR-008): the PostSync hook Job that runs the
+# deployed e2e suite from the smoke image against the public hostname and
+# publishes the verdict as ConfigMap smoke-result. Off until the deploy
+# branch turns it on, after the realm grant merges; never rendered while
+# paused. `issuerFallback` is the realm's in-cluster address, tried when the
+# public issuer does not answer from inside the cluster.
+smoke:
+    enabled: false
+    issuerFallback: http://keycloak-http.identity.svc.cluster.local/realms/vf-workshops
+    docsHost: ""
+
+resources:
+    requests:
+        cpu: 50m
+        memory: 128Mi
+    limits:
+        memory: 512Mi

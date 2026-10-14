@@ -1,0 +1,84 @@
+# The machine door's key (ADR-006), minted in this namespace with the
+# platform's generate-if-absent idiom for an app runtime secret (REF-Foundry
+# section 4, "Machine-door keys"): created once, never rotated by a re-sync,
+# RBAC scoped to this one Secret name, no reflection. The doors page hands the
+# value to a signed-in person, so nobody needs it before it exists and no hand
+# applies it.
+#
+# Waves -2 and -1 run the mint ahead of the Deployment (wave 0), which reads
+# the Secret by required reference: the pod never starts without its key.
+{{- $secret := .Values.mcpKey.secretName }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gen-{{ $secret }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gen-{{ $secret }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+rules:
+  # create cannot be scoped to a resourceName...
+  - apiGroups: [""]
+    resources: [secrets]
+    verbs: [create]
+  # ...and read only this one (the existence guard).
+  - apiGroups: [""]
+    resources: [secrets]
+    resourceNames: [{{ $secret | quote }}]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gen-{{ $secret }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: gen-{{ $secret }}
+subjects:
+  - kind: ServiceAccount
+    name: gen-{{ $secret }}
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gen-{{ $secret }}
+  annotations:
+    # A Sync hook, ordered by wave with the tracked resources: it completes
+    # before the wave-0 Deployment applies.
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 6
+  activeDeadlineSeconds: 300
+  template:
+    spec:
+      serviceAccountName: gen-{{ $secret }}
+      restartPolicy: OnFailure
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      containers:
+        - name: generate
+          image: alpine/k8s:1.31.1
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              if kubectl get secret {{ $secret }} -n {{ .Release.Namespace }} >/dev/null 2>&1; then
+                echo "{{ $secret }} present; leaving value as is"
+              else
+                PASSWORD="$(head -c 24 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+                kubectl create secret generic {{ $secret }} -n {{ .Release.Namespace }} \
+                  --from-literal=WORKSHOPS_AUTH_USER={{ .Chart.Name }}-agent \
+                  --from-literal=WORKSHOPS_AUTH_PASSWORD="$PASSWORD"
+                echo "minted {{ $secret }}"
+              fi

@@ -1,0 +1,69 @@
+/* The Vodafone Portugal Digital palette, type roles and semantic outcomes. See
+   docs/src/content/docs/brand.md for the maintained visual ownership. */
+:root{
+  --font-sans:"Vodafone",-apple-system,"SF Pro Display","Helvetica Neue","Segoe UI",Arial,sans-serif;
+  --font-display:var(--font-sans);
+  --font-mono:"Cascadia Code",Consolas,monospace;
+  --radius:0.375rem;
+}
+:root,
+:root[data-theme="light"]{
+  --background:0 0% 94.9%;
+  --foreground:210 8% 15.7%;
+  --card:0 0% 100%;
+  --card-foreground:210 8% 15.7%;
+  --primary:0 100% 45.1%;
+  --primary-foreground:0 0% 100%;
+  --secondary:0 0% 94.9%;
+  --secondary-foreground:210 8% 15.7%;
+  --muted:0 0% 94.9%;
+  --muted-foreground:195 3% 29.8%;
+  --accent:0 0% 89.8%;
+  --accent-foreground:210 8% 15.7%;
+  --destructive:353 62% 41.8%;
+  --destructive-foreground:0 0% 100%;
+  --border:0 0% 74.5%;
+  --input:0 0% 74.5%;
+  --ring:188 100% 27.4%;
+  --ok:152.88 53.28% 26.86%;
+  --mid:40.17 100.00% 23.73%;
+  --hot:352.91 63.82% 39.02%;
+  --ok-foreground:0 0% 100%;
+  --mid-foreground:0 0% 100%;
+  --hot-foreground:0 0% 100%;
+}
+:root[data-theme="dark"]{
+  --background:230 43% 2.8%;
+  --foreground:220 30% 96.1%;
+  --card:222 23% 8.6%;
+  --card-foreground:220 30% 96.1%;
+  --primary:0 100% 45.1%;
+  --primary-foreground:0 0% 100%;
+  --secondary:223 24% 5.7%;
+  --secondary-foreground:220 30% 96.1%;
+  --muted:223 24% 5.7%;
+  --muted-foreground:218 19% 80.2%;
+  --accent:220 15% 14%;
+  --accent-foreground:220 30% 96.1%;
+  --destructive:358 100% 79.4%;
+  --destructive-foreground:230 43% 2.8%;
+  --border:220 15% 24.3%;
+  --input:220 15% 24.3%;
+  --ring:187 77% 60.2%;
+  --ok:150.39 43.02% 64.90%;
+  --mid:31.51 71.28% 61.76%;
+  --hot:358.32 100.00% 79.02%;
+  --ok-foreground:230 43% 2.8%;
+  --mid-foreground:230 43% 2.8%;
+  --hot-foreground:230 43% 2.8%;
+}
+
+/* The one mark: the lockup (speechmark, words, flag), as live text in the rail. */
+.vfd-lockup .lockup{display:flex;align-items:center;color:hsl(var(--foreground))}
+.vfd-lockup .lockup-tile{flex:none;width:32px;height:32px}
+.vfd-lockup .lockup-words{display:flex;flex-direction:column;justify-content:center;min-height:28px;margin-left:10px;padding-left:10px;border-left:1px solid hsl(var(--border));line-height:1.15}
+.vfd-lockup .lockup-words b{font:700 12px var(--font-sans);letter-spacing:.06em}
+.vfd-lockup .lockup-words i{margin-top:2px;font:600 8.5px var(--font-mono);font-style:normal;letter-spacing:.2em;text-transform:uppercase;color:hsl(var(--muted-foreground))}
+.vfd-lockup .lockup-flag{flex:none;width:20px;height:14px;margin-left:10px}
+:root[data-theme="dark"] .vfd-lockup .lockup-tile path:first-child{fill:#fff}
+:root[data-theme="dark"] .vfd-lockup .lockup-tile path:last-child{fill:hsl(var(--background))}

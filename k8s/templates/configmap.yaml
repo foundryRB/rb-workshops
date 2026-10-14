@@ -1,0 +1,32 @@
+# The app's non-secret configuration (REF-Foundry section 3: coordinates are
+# config, only credentials are secret). Consumed by the app container through
+# envFrom, so the Deployment's pod template hashes this file (checksum/config)
+# and a config-only change rolls the pods.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+data:
+  PORT: {{ .Values.port | quote }}
+  WORKSHOPS_STATIC_DIR: /srv/app
+  WORKSHOPS_RENDERER_LOCK: /srv/renderer.lock
+  WORKSHOPS_RENDERER_CACHE_DIR: /var/cache/renderer
+  WORKSHOPS_RENDERER_URL: {{ .Values.renderer.url | quote }}
+  GITHOME_REPOSITORY: {{ .Values.githome.repository | quote }}
+  GITHOME_REF: {{ .Values.githome.ref | quote }}
+  GITHOME_PATH: {{ .Values.githome.path | quote }}
+  GITHOME_TOKEN_FILE: /var/run/githome/GITHOME_TOKEN
+  WORKSHOPS_RENDERER_USER_FILE: /var/run/renderer-source/WORKSHOPS_RENDERER_USER
+  WORKSHOPS_RENDERER_PASSWORD_FILE: /var/run/renderer-source/WORKSHOPS_RENDERER_PASSWORD
+  {{- if .Values.host }}
+  WORKSHOPS_MCP_ALLOWED_HOSTS: {{ .Values.host | quote }}
+  WORKSHOPS_PUBLIC_HOST: {{ .Values.host | quote }}
+  {{- end }}
+  {{- if .Values.database.enabled }}
+  DATABASE_HOST: {{ .Values.database.host | quote }}
+  DATABASE_PORT: {{ .Values.database.port | quote }}
+  DATABASE_NAME: {{ .Values.database.name | quote }}
+  DATABASE_USER: {{ .Values.database.user | quote }}
+  {{- end }}

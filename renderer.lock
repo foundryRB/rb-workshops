@@ -1,0 +1,10 @@
+# The pinned canonical renderer: bootstrap-workshop's template.html, the one
+# REF-Workshop renderer, consumed and never forked (EXP-002). The engine
+# fetches these bytes at runtime from the configured source and refuses to
+# render when their sha256 differs from this pin. The repository carries the
+# pin, never the template. Bump this file only after the playbook moved.
+source: playbook-studio get_skill_file bootstrap-workshop template.html
+corpus: VFPT-VODAFONE-FOUNDRY/adf-playbook galaxies/press/skills/bootstrap-workshop/template.html
+sha256: 9f434117dd67b3d7a40c9ccd7aec4f9a5a9ec16624f2b6bbe3d5f0ee44e5c78a
+bytes: 553304
+pinned: 2026-10-02

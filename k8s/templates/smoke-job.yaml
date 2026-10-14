@@ -1,0 +1,62 @@
+{{- if and .Values.smoke.enabled (not .Values.paused) }}
+# The deployed-smoke workload (ADR-008, platform ADR-047): an ArgoCD PostSync
+# hook Job, never a CronJob, so the verdict is coupled to the sync and every
+# promotion carries a fresh one. It runs the deployed e2e suite from the
+# released smoke image against the public hostname, provisioning the
+# realm-local test user at its own boot (ASM-P10), and publishes ConfigMap
+# smoke-result, which the platform's reporter serves at
+# https://docs.<zone>/smoke/vf-workshops.json. The backoffLimit outlasts the
+# realm grant's convergence: the first hook can fire before the tenants
+# Application has minted keycloak-vf-workshops. The test user's Secret is read
+# over the API after the provisioning step, never as a secretKeyRef, because
+# it does not exist on the first boot.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Chart.Name }}-smoke
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 8
+  activeDeadlineSeconds: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Chart.Name }}-smoke
+        app.kubernetes.io/component: smoke
+    spec:
+      serviceAccountName: {{ .Chart.Name }}-smoke
+      restartPolicy: OnFailure
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      containers:
+        - name: smoke
+          image: "{{ .Values.images.smoke.repository }}:{{ .Values.images.smoke.tag }}"
+          env:
+            # Node reads its extra CA at start: the cluster CA for the API-server calls.
+            - name: NODE_EXTRA_CA_CERTS
+              value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+            - name: SMOKE_NAMESPACE
+              value: {{ .Release.Namespace | quote }}
+            - name: SMOKE_TARGET
+              value: "https://{{ required "set host on the deploy branch" .Values.host }}"
+            - name: SMOKE_ISSUER
+              value: {{ required "set auth.oidc.issuer on the deploy branch" .Values.auth.oidc.issuer | quote }}
+            - name: SMOKE_ISSUER_FALLBACK
+              value: {{ .Values.smoke.issuerFallback | quote }}
+            - name: SMOKE_REALM_ADMIN_SECRET
+              value: {{ .Values.auth.oidc.existingSecret | quote }}
+            - name: SMOKE_TAG
+              value: {{ .Values.images.app.tag | quote }}
+            {{- if .Values.smoke.docsHost }}
+            - name: SMOKE_DOCS
+              value: {{ .Values.smoke.docsHost | quote }}
+            {{- end }}
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+{{- end }}

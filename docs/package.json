@@ -1,0 +1,22 @@
+{
+    "name": "vf-workshops-docs",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "astro dev",
+        "build": "astro build",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "@astrojs/mdx": "^7.0.1",
+        "@astrojs/starlight": "^0.41.0",
+        "@psa-department-of-engineering/starlight-theme": "^1.2.0",
+        "astro": "^7.2.8",
+        "astro-mermaid": "^2.0.2",
+        "mermaid": "^11.4.0"
+    },
+    "devDependencies": {
+        "@psa-department-of-engineering/vitest-intent": "^2.0.1",
+        "vitest": "^4.1.11"
+    }
+}

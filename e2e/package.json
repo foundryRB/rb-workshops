@@ -1,0 +1,17 @@
+{
+  "name": "vf-workshops-e2e",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:deployed": "playwright test --config playwright.deployed.config.ts"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.63.0",
+    "@psa-department-of-engineering/playwright-intent": "^2.0.1",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0"
+  }
+}

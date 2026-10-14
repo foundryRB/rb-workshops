@@ -1,0 +1,148 @@
+# vf-workshops app-owned test suites. Deliberately NOT a thin caller: build.yml is shared
+# because release and publish must not drift, but a test suite is genuinely per-app
+# (a pytest, a vitest, a Playwright e2e), so there is nothing to share. What IS
+# contract is that this file exists and runs on pull_request, so a contributor's PR
+# - including one from a fork - meets a gate before it is merged (INT-FOUNDRY-063).
+#
+# Five suites: the intent audit, pytest (tests/, a PostgreSQL service), vitest
+# (frontend/, plus the check that the committed app/ bundle is the build of the
+# source), playwright (e2e/selfcontained, against the app's own stack), and the
+# docs site's vitest bundle. e2e/deployed runs only from the in-cluster smoke Job.
+#
+# The renderer: the canonical template lives in a private corpus and this
+# workflow holds no credential for it (the build record names the plan defect),
+# so the suites that need its bytes read WORKSHOPS_RENDERER_URL and the two
+# credential secrets when the repository carries them, and skip with the reason
+# named when it does not. Every other claim runs here regardless.
+name: test
+on:
+    push:
+        branches: [main]
+    pull_request:
+env:
+    WORKSHOPS_RENDERER_URL: ${{ vars.WORKSHOPS_RENDERER_URL }}
+    WORKSHOPS_RENDERER_USER: ${{ secrets.WORKSHOPS_RENDERER_USER }}
+    WORKSHOPS_RENDERER_PASSWORD: ${{ secrets.WORKSHOPS_RENDERER_PASSWORD }}
+jobs:
+    intent:
+        # A fork has no access to this org's ARC scale set, so its jobs would queue
+        # forever; a fork falls back to a GitHub-hosted runner while our runs stay on
+        # ARC (foundry-platform ADR-037 governs our runs, not a fork's).
+        runs-on: ${{ github.event.repository.fork && 'ubuntu-latest' || 'arc-dind' }}
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.13"
+            # csd-intent audits intent.yaml against CSD-INTENT-01 and checks every
+            # active claim is attested by a test marker naming it.
+            - name: Install the intent auditor
+              run: pip install "csd-intent>=0.6.0,<0.7"
+            - name: Audit intent.yaml
+              run: csd-intent .
+    pytest:
+        # The store-backed suites need a real PostgreSQL: a store-less test fails, it never skips.
+        runs-on: ${{ github.event.repository.fork && 'ubuntu-latest' || 'arc-dind' }}
+        services:
+            postgres:
+                image: postgres:16
+                env:
+                    POSTGRES_USER: workshops
+                    POSTGRES_PASSWORD: workshops
+                    POSTGRES_DB: workshops
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 5s
+                    --health-timeout 5s
+                    --health-retries 10
+        env:
+            DATABASE_URL: postgresql://workshops:workshops@localhost:5432/workshops
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.13"
+            - name: Install the app and its test runtime
+              run: pip install -e ".[test]"
+            - name: Lint
+              run: ruff check backend tests
+            - name: Run the suite
+              run: pytest tests
+    vitest:
+        # frontend/'s own suite (the capture bridge, the brand asset), and the
+        # check that app/ is the build of the committed source and not a stale bundle.
+        runs-on: ${{ github.event.repository.fork && 'ubuntu-latest' || 'arc-dind' }}
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: "22"
+            - run: npm ci --no-audit --no-fund
+              working-directory: frontend
+            - run: npm test
+              working-directory: frontend
+            - name: The committed app/ bundle is the build of the source
+              run: npm run build && git diff --exit-code --stat -- ../app
+              working-directory: frontend
+    playwright:
+        # The self-contained e2e claims, against the app's own stack (the built
+        # document in app/, the backend, a PostgreSQL service), one project, Chromium.
+        runs-on: ${{ github.event.repository.fork && 'ubuntu-latest' || 'arc-dind' }}
+        services:
+            postgres:
+                image: postgres:16
+                env:
+                    POSTGRES_USER: workshops
+                    POSTGRES_PASSWORD: workshops
+                    POSTGRES_DB: workshops
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 5s
+                    --health-timeout 5s
+                    --health-retries 10
+        env:
+            DATABASE_URL: postgresql://workshops:workshops@localhost:5432/workshops
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.13"
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: "22"
+            - name: Install the backend
+              run: pip install -e .
+            - name: Install the e2e suite
+              run: npm ci --no-audit --no-fund
+              working-directory: e2e
+            - name: Install the browser
+              run: npx playwright install --with-deps chromium
+              working-directory: e2e
+            - name: Run the suite
+              run: npx playwright test
+              working-directory: e2e
+            - name: Upload the report on failure
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: playwright-report
+                  path: e2e/playwright-report/
+                  retention-days: 7
+    docs:
+        # The docs site's vitest bundle (docs/tests/), attesting the STARLIGHT claims.
+        runs-on: ${{ github.event.repository.fork && 'ubuntu-latest' || 'arc-dind' }}
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: "22"
+            - run: npm ci --no-audit --no-fund
+              working-directory: docs
+            - run: npm test
+              working-directory: docs
+            - run: npm run build
+              working-directory: docs

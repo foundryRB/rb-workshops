@@ -1,0 +1,56 @@
+{{- if and .Values.smoke.enabled (not .Values.paused) }}
+# The smoke Job's own ServiceAccount RBAC (ADR-008): it creates the test
+# user's Secret and the verdict ConfigMap, and reads the realm-admin
+# credential the grant minted. Two rules per resource, deliberately: create
+# cannot be scoped by resourceNames (a create request carries no name), and
+# read/update is scoped to exactly the objects this workload owns.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Chart.Name }}-smoke
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Chart.Name }}-smoke
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+rules:
+  # create cannot be scoped to a resourceName...
+  - apiGroups: [""]
+    resources: [configmaps]
+    verbs: [create]
+  - apiGroups: [""]
+    resources: [secrets]
+    verbs: [create]
+  # ...and read/update only the objects this workload owns or presents.
+  - apiGroups: [""]
+    resources: [configmaps]
+    resourceNames: ["smoke-result"]
+    verbs: [get, update, patch]
+  - apiGroups: [""]
+    resources: [secrets]
+    resourceNames: ["{{ .Chart.Name }}-smoke"]
+    verbs: [get, patch]
+  - apiGroups: [""]
+    resources: [secrets]
+    resourceNames: [{{ .Values.auth.oidc.existingSecret | quote }}]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Chart.Name }}-smoke
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ .Chart.Name }}-smoke
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Chart.Name }}-smoke
+    namespace: {{ .Release.Namespace }}
+{{- end }}

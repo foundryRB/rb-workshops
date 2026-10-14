@@ -1,0 +1,48 @@
+# The repo's single source of truth for the images CI releases: every
+# service with a build: section publishes, named by its image: basename
+# (INT-FOUNDRY-003; the docs image publishes beside them from docs/Dockerfile).
+# `db` carries no build: key, so it publishes nothing; it exists for local
+# runs and the integration suites only. CI's own PostgreSQL is a services:
+# container (test.yml).
+services:
+    app:
+        build:
+            context: ..
+            dockerfile: devops/Dockerfile
+        image: vf-workshops-app:latest
+        ports:
+            - "8080:8000"
+        environment:
+            DATABASE_URL: postgresql://workshops:workshops@db:5432/workshops
+            WORKSHOPS_AUTH_DISABLED: ${WORKSHOPS_AUTH_DISABLED:-true}
+            WORKSHOPS_RENDERER_URL: ${WORKSHOPS_RENDERER_URL:-}
+            WORKSHOPS_RENDERER_USER: ${WORKSHOPS_RENDERER_USER:-}
+            WORKSHOPS_RENDERER_PASSWORD: ${WORKSHOPS_RENDERER_PASSWORD:-}
+            GITHOME_TOKEN: ${GITHOME_TOKEN:-}
+        depends_on:
+            db:
+                condition: service_healthy
+
+    # The deployed smoke suite's image (ADR-008): built and released beside the
+    # app so Image Updater moves its tag with every release; it runs only
+    # in-cluster as the chart's PostSync hook Job, never in this composition.
+    smoke:
+        build:
+            context: ..
+            dockerfile: devops/Dockerfile.smoke
+        image: vf-workshops-smoke:latest
+        profiles: ["release-only"]
+
+    db:
+        image: postgres:16-alpine
+        environment:
+            POSTGRES_USER: workshops
+            POSTGRES_PASSWORD: workshops
+            POSTGRES_DB: workshops
+        ports:
+            - "55432:5432"
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U workshops"]
+            interval: 2s
+            timeout: 3s
+            retries: 15
