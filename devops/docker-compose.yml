@@ -9,7 +9,7 @@ services:
         build:
             context: ..
             dockerfile: devops/Dockerfile
-        image: vf-workshops-app:latest
+        image: rb-workshops-app:latest
         ports:
             - "8080:8000"
         environment:
@@ -30,7 +30,7 @@ services:
         build:
             context: ..
             dockerfile: devops/Dockerfile.smoke
-        image: vf-workshops-smoke:latest
+        image: rb-workshops-smoke:latest
         profiles: ["release-only"]
 
     db:

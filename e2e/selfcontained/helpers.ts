@@ -6,7 +6,7 @@ export function sixKindDataset(id = "kickoff", version = "v1") {
     meta: {
       id,
       title: "Delivery Kickoff",
-      eyebrow: "DIGITAL ENGINEERING",
+      eyebrow: "SOFTWARE ENGINEERING",
       session: "Session 1",
       date: "2026-09-30",
       duration: 60,

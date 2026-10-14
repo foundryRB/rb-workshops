@@ -1,6 +1,6 @@
 @import "./fonts.css";
 @import "./theme.css";
-@import "../vodafone/shell.css";
+@import "../rb/shell.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

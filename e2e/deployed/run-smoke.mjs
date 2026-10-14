@@ -3,9 +3,9 @@
  * The in-cluster smoke runner (ADR-008, platform ADR-047): the PostSync hook Job's entrypoint.
  *
  * 1. Provision the realm-local test user, status-gated and idempotent (ASM-P10): read the
- *    realm-admin password from Secret keycloak-vf-workshops (key realmAdminPassword), log in
+ *    realm-admin password from Secret keycloak-rb-workshops (key realmAdminPassword), log in
  *    through the realm's admin-cli client, create the user if absent, mint its password into
- *    Secret vf-workshops-smoke (create-if-absent, never rotating a live value).
+ *    Secret rb-workshops-smoke (create-if-absent, never rotating a live value).
  * 2. Run the deployed Playwright suite against the public hostname.
  * 3. Publish the verdict as ConfigMap smoke-result (label foundry.dev/smoke-result: "true",
  *    data key result.json). Nothing else leaves this pod.
@@ -27,9 +27,9 @@ if (!process.env.NODE_EXTRA_CA_CERTS && existsSync(CA_FILE)) {
   process.exit(again.status ?? 1);
 }
 
-const NS = process.env.SMOKE_NAMESPACE || "vf-workshops";
-const TARGET = process.env.SMOKE_TARGET || "https://vf-workshops.vodafone-foundry.com";
-const ISSUER = process.env.SMOKE_ISSUER || "https://keycloak.vodafone-foundry.com/realms/vf-workshops";
+const NS = process.env.SMOKE_NAMESPACE || "rb-workshops";
+const TARGET = process.env.SMOKE_TARGET || "https://rb-workshops.rb-foundry.com";
+const ISSUER = process.env.SMOKE_ISSUER || "https://keycloak.rb-foundry.com/realms/rb-workshops";
 const ISSUER_FALLBACK = process.env.SMOKE_ISSUER_FALLBACK || "";
 const REALM = ISSUER.split("/realms/")[1];
 const ADMIN_USER = process.env.SMOKE_REALM_ADMIN || `${REALM}-admin`;

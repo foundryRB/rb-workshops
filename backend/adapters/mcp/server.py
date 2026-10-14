@@ -32,7 +32,7 @@ PORT_TOOLS: dict[str, list[str]] = {
 assert set(PORT_TOOLS) == set(INBOUND_PORTS)
 
 _INSTRUCTIONS = (
-    "vf-workshops: the workshops engine. A session is one REF-Workshop dataset (meta plus typed "
+    "rb-workshops: the workshops engine. A session is one REF-Workshop dataset (meta plus typed "
     "activities: frame, collect, walk, sort, assign, close), stored with every revision kept. "
     "create_session and revise_session validate against the whole section 3 schema and refuse an "
     "invalid dataset with the report. start_run opens a rehearsal or a session run over a revision; "
@@ -51,7 +51,7 @@ def _transport_security(allowed_hosts: list[str]) -> TransportSecuritySettings |
 
 def build_mcp_server(engine: Engine, allowed_hosts: list[str]) -> FastMCP:
     server = FastMCP(
-        "vf-workshops",
+        "rb-workshops",
         instructions=_INSTRUCTIONS,
         streamable_http_path="/",
         stateless_http=True,

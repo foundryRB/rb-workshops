@@ -32,7 +32,7 @@ export default function Doors() {
     }
   };
   return (
-    <Shell active="doors" header={<Crumbs items={[{ label: "vf-workshops", to: "/" }, { label: "Doors" }]} />}>
+    <Shell active="doors" header={<Crumbs items={[{ label: "rb-workshops", to: "/" }, { label: "Doors" }]} />}>
       <main className="flex-1 px-8 py-6">
         <div className="flex items-end justify-between">
           <div>

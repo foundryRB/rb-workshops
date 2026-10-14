@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# The smoke image (vf-workshops-smoke): the deployed e2e suite and its
+# The smoke image (rb-workshops-smoke): the deployed e2e suite and its
 # Playwright runtime, run in-cluster as the chart's PostSync hook Job
 # (ADR-008, platform ADR-047). It provisions the realm-local test user at its
 # own boot, runs the suite against the public hostname, and publishes only the

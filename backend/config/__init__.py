@@ -82,7 +82,7 @@ def load_settings() -> Settings:
         database_url=os.environ.get("DATABASE_URL", ""),
         database_host=os.environ.get("DATABASE_HOST", "localhost"),
         database_port=os.environ.get("DATABASE_PORT", "5432"),
-        database_name=os.environ.get("DATABASE_NAME", "vf-workshops"),
+        database_name=os.environ.get("DATABASE_NAME", "rb-workshops"),
         database_user=os.environ.get("DATABASE_USER", ""),
         database_password=_read_secret("DATABASE_PASSWORD", "DATABASE_PASSWORD_FILE"),
         database_schema=os.environ.get("DATABASE_SCHEMA", "public"),
@@ -98,7 +98,7 @@ def load_settings() -> Settings:
         renderer_password=_read_secret("WORKSHOPS_RENDERER_PASSWORD", "WORKSHOPS_RENDERER_PASSWORD_FILE"),
         renderer_lock=os.environ.get("WORKSHOPS_RENDERER_LOCK", str(root / "renderer.lock")),
         githome_repository=os.environ.get(
-            "GITHOME_REPOSITORY", "VFPT-VODAFONE-FOUNDRY/adf-workshops"
+            "GITHOME_REPOSITORY", "foundryRB/rb-workshops"
         ),
         githome_ref=os.environ.get("GITHOME_REF", "home"),
         githome_path=os.environ.get("GITHOME_PATH", "workshops/{session}/{revision}/"),

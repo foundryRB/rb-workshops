@@ -56,7 +56,7 @@ def install_auth(app: FastAPI, settings: Settings) -> None:
             return JSONResponse(status_code=503, content={"detail": "authentication is not configured"})
         if _is_authorized(request, settings.auth_user, settings.auth_password):
             return await call_next(request)
-        return Response(status_code=401, headers={"WWW-Authenticate": 'Basic realm="vf-workshops"'})
+        return Response(status_code=401, headers={"WWW-Authenticate": 'Basic realm="rb-workshops"'})
 
 
 def _is_authorized(request: Request, user: str, password: str) -> bool:

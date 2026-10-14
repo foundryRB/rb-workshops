@@ -5,9 +5,9 @@
 # released smoke image against the public hostname, provisioning the
 # realm-local test user at its own boot (ASM-P10), and publishes ConfigMap
 # smoke-result, which the platform's reporter serves at
-# https://docs.<zone>/smoke/vf-workshops.json. The backoffLimit outlasts the
+# https://docs.<zone>/smoke/rb-workshops.json. The backoffLimit outlasts the
 # realm grant's convergence: the first hook can fire before the tenants
-# Application has minted keycloak-vf-workshops. The test user's Secret is read
+# Application has minted keycloak-rb-workshops. The test user's Secret is read
 # over the API after the provisioning step, never as a secretKeyRef, because
 # it does not exist on the first boot.
 apiVersion: batch/v1

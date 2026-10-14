@@ -1,5 +1,5 @@
 apiVersion: v2
-name: vf-workshops
+name: rb-workshops
 description: "The workshops engine: typed working-session instruments, authored, run and exported."
 type: application
 version: 0.1.0

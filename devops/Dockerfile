@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# The app image (vf-workshops-app): the FastAPI backend serving the built
+# The app image (rb-workshops-app): the FastAPI backend serving the built
 # SPA document from app/, the REST API and the MCP door, from one image. The
 # frontend is built and committed into app/ (the served path the walking
 # skeleton claim reads), so this image needs no node stage. The renderer's

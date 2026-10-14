@@ -74,6 +74,6 @@ def mcp_credential(request: Request) -> Any:
         "user": settings.auth_user,
         "password": settings.auth_password,
         "url": f"{scheme}://{host}/mcp",
-        "connect": f"claude mcp add --transport http vf-workshops {scheme}://{host}/mcp "
+        "connect": f"claude mcp add --transport http rb-workshops {scheme}://{host}/mcp "
         f'--header "Authorization: Basic <base64 of {settings.auth_user}:<password>>"',
     }

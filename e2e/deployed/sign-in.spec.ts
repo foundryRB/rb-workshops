@@ -2,13 +2,13 @@ import { expect } from "@playwright/test";
 import { intent } from "@psa-department-of-engineering/playwright-intent";
 
 /** INT-WORKSHOPS-024: a realm-local test user signs in through the deployed realm and reaches the shelf. */
-intent("INT-WORKSHOPS-024", "a realm-local user signs in through the vf-workshops realm and reaches the shelf", async ({ page, baseURL }) => {
+intent("INT-WORKSHOPS-024", "a realm-local user signs in through the rb-workshops realm and reaches the shelf", async ({ page, baseURL }) => {
   const user = process.env.SMOKE_USER;
   const password = process.env.SMOKE_PASSWORD;
   expect(user, "SMOKE_USER is set by the smoke runner").toBeTruthy();
   expect(password, "SMOKE_PASSWORD is set by the smoke runner").toBeTruthy();
   await page.goto(`${baseURL}/`);
-  await expect(page).toHaveURL(/keycloak.*\/realms\/vf-workshops\//);
+  await expect(page).toHaveURL(/keycloak.*\/realms\/rb-workshops\//);
   await page.locator("#username").fill(user!);
   await page.locator("#password").fill(password!);
   await page.locator("#kc-login").click();

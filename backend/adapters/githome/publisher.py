@@ -74,7 +74,7 @@ class GitHubHomePublisher:
             raise HomeRefRefused(f"publish aimed at {ref!r}; only the configured home ref {self._ref!r} is writable")
         token = self.token
         if not token:
-            raise PublishFailed("the publisher has no credential: Secret vf-workshops-githome is not seeded")
+            raise PublishFailed("the publisher has no credential: Secret rb-workshops-githome is not seeded")
         self._live_token = token
         with self._factory() as client:
             head = self._head(client)
@@ -108,7 +108,7 @@ class GitHubHomePublisher:
                 "Authorization": f"Bearer {getattr(self, '_live_token', '') or self.token}",
                 "Accept": "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28",
-                "User-Agent": "vf-workshops-publisher",
+                "User-Agent": "rb-workshops-publisher",
             },
         )
 

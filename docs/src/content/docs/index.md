@@ -1,5 +1,5 @@
 ---
-title: Vodafone Workshops
+title: RB Workshops
 id: DOC-OVERVIEW-001
 type: Overview
 status: Active
@@ -7,7 +7,7 @@ updated: '2026-09-29'
 summary: The workshops engine at a glance - what it holds, the three doors over its one core, and where each concern is documented.
 ---
 
-vf-workshops manages workshops the way a library manages its books. A workshop is one typed working-session instrument: a session dataset of typed activities (frame, collect, walk, sort, assign, close) projected as full-screen room surfaces the room works on and a gated facilitator script, with the outcomes captured live on the surface. The engine stores every revision of a session, lets a person author it in the browser with no agent, runs both projections for a rehearsal and for the session with the capture landed as it happens, exports the byte-identical standalone HTML the canonical renderer produces, projects a capture toward a plan by its item ids, and publishes an export to a git-backed home. One application core sits behind one inbound port set, and three doors adapt it: the browser UI, the HTTP API and the MCP door.
+rb-workshops manages workshops the way a library manages its books. A workshop is one typed working-session instrument: a session dataset of typed activities (frame, collect, walk, sort, assign, close) projected as full-screen room surfaces the room works on and a gated facilitator script, with the outcomes captured live on the surface. The engine stores every revision of a session, lets a person author it in the browser with no agent, runs both projections for a rehearsal and for the session with the capture landed as it happens, exports the byte-identical standalone HTML the canonical renderer produces, projects a capture toward a plan by its item ids, and publishes an export to a git-backed home. One application core sits behind one inbound port set, and three doors adapt it: the browser UI, the HTTP API and the MCP door.
 
 ## At a glance
 
@@ -25,7 +25,7 @@ flowchart LR
   core --> store[("PostgreSQL<br/>sessions, revisions, runs, publications")]
   core --> renderer["the pinned canonical renderer<br/>bootstrap-workshop template, at renderer.lock"]
   core --> home["the git-backed home<br/>an orphan branch, over HTTPS"]
-  people["people"] -->|"oauth2-proxy, the vf-workshops realm"| ui
+  people["people"] -->|"oauth2-proxy, the rb-workshops realm"| ui
   people -->|"oauth2-proxy"| api
   agents["agents"] -->|"the engine's own key"| mcp
 ```

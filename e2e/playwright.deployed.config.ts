@@ -14,7 +14,7 @@ export default defineConfig({
   workers: 1,
   reporter: [["list"], ["json", { outputFile: "results/deployed.json" }]],
   use: {
-    baseURL: process.env.SMOKE_TARGET || "https://vf-workshops.vodafone-foundry.com",
+    baseURL: process.env.SMOKE_TARGET || "https://rb-workshops.rb-foundry.com",
     trace: "off",
     screenshot: "off",
     video: "off",

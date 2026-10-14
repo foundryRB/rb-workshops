@@ -95,7 +95,7 @@ def _fetch_over_mcp(url: str, user: str, password: str, *, skill: str, rel_path:
                 "params": {
                     "protocolVersion": "2025-03-26",
                     "capabilities": {},
-                    "clientInfo": {"name": "vf-workshops", "version": "1"},
+                    "clientInfo": {"name": "rb-workshops", "version": "1"},
                 },
             },
         )

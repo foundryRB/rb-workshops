@@ -25,7 +25,7 @@ One core, one inbound port set, three adapters. Every row is one port; a door th
 
 ## The gates
 
-People reach the UI and the API through the oauth2-proxy sidecar against the `vf-workshops` realm; an unauthenticated browse redirects to the realm's sign-in, an unauthenticated API call answers 401. The MCP door at `/mcp` is skipped by the proxy with its auth header kept, and takes the engine's own HTTP Basic key: 503 until the key exists, 401 on a wrong one. The doors page hands the key to a signed-in person as a ready connect command. `/api/health` answers without credentials.
+People reach the UI and the API through the oauth2-proxy sidecar against the `rb-workshops` realm; an unauthenticated browse redirects to the realm's sign-in, an unauthenticated API call answers 401. The MCP door at `/mcp` is skipped by the proxy with its auth header kept, and takes the engine's own HTTP Basic key: 503 until the key exists, 401 on a wrong one. The doors page hands the key to a signed-in person as a ready connect command. `/api/health` answers without credentials.
 
 ## Read next
 

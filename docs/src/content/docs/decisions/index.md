@@ -4,10 +4,10 @@ id: DOC-DECISIONS-INDEX-001
 type: Reference
 status: Active
 updated: '2026-10-02'
-summary: The architecture decision log for vf-workshops, current versus superseded.
+summary: The architecture decision log for rb-workshops, current versus superseded.
 ---
 
-Every significant, hard-to-reverse choice in vf-workshops is recorded as an architecture decision record: the context, the decision, why, and the alternatives rejected. This page is the log; the records carry the detail. The why lives here and nowhere else on the site.
+Every significant, hard-to-reverse choice in rb-workshops is recorded as an architecture decision record: the context, the decision, why, and the alternatives rejected. This page is the log; the records carry the detail. The why lives here and nowhere else on the site.
 
 ## Current
 
@@ -23,7 +23,7 @@ Every significant, hard-to-reverse choice in vf-workshops is recorded as an arch
 | [ADR-008](../adr-008/) | Deployed attestation follows the platform's smoke contract | Decided |
 | [ADR-009](../adr-009/) | The publisher refuses any ref but the configured home ref before a connection opens | Decided |
 | [ADR-010](../adr-010/) | The API door mounts under /api and the port table's routes are relative to it | Decided |
-| [ADR-011](../adr-011/) | Vodafone Portugal Digital identity for the application, documentation and canonical workshops | Decided |
+| [ADR-011](../adr-011/) | RB Software Engineering identity for the application, documentation and canonical workshops | Decided |
 
 ## Superseded
 

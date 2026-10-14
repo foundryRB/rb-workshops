@@ -73,7 +73,7 @@ export default function Shelf() {
       }
       header={
         <>
-          <Crumbs items={[{ label: "vf-workshops", to: "/" }, { label: "Shelf" }]} />
+          <Crumbs items={[{ label: "rb-workshops", to: "/" }, { label: "Shelf" }]} />
           <input aria-label="Filter sessions" placeholder="Filter sessions" value={filter} onChange={(e) => setFilter(e.target.value)} className={`ml-4 h-9 w-64 rounded-md border border-input bg-transparent px-3 py-1 text-sm placeholder:text-muted-foreground`} />
           <Button variant="primary" className="ml-auto" onClick={create} disabled={busy} data-testid="new-session">
             New session

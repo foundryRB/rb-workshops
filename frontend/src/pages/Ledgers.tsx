@@ -129,7 +129,7 @@ export function Runs() {
     api.listSessions().then((ss) => setSessions(Object.fromEntries(ss.map((s) => [s.id, s]))));
   }, []);
   return (
-    <Shell active="runs" header={<Crumbs items={[{ label: "vf-workshops", to: "/" }, { label: "Runs" }]} />}>
+    <Shell active="runs" header={<Crumbs items={[{ label: "rb-workshops", to: "/" }, { label: "Runs" }]} />}>
       <main className="flex-1 px-8 py-6">
         <h1 className="display text-2xl font-bold tracking-tight">Runs</h1>
         <p className="mt-1 text-sm text-muted-foreground">Every rehearsal and session, each with its own capture and its own export.</p>
@@ -183,7 +183,7 @@ export function Exports() {
     api.listSessions().then((ss) => setSessions(Object.fromEntries(ss.map((s) => [s.id, s]))));
   }, []);
   return (
-    <Shell active="exports" header={<Crumbs items={[{ label: "vf-workshops", to: "/" }, { label: "Exports" }]} />}>
+    <Shell active="exports" header={<Crumbs items={[{ label: "rb-workshops", to: "/" }, { label: "Exports" }]} />}>
       <main className="flex-1 px-8 py-6">
         <h1 className="display text-2xl font-bold tracking-tight">Exports</h1>
         <p className="mt-1 text-sm text-muted-foreground">The artifacts already published to the git-backed home, across all sessions.</p>

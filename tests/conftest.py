@@ -235,7 +235,7 @@ def six_kind_dataset(session_id: str = "kickoff", version: str = "v1") -> dict[s
         "meta": {
             "id": session_id,
             "title": "Delivery Kickoff",
-            "eyebrow": "DIGITAL ENGINEERING",
+            "eyebrow": "SOFTWARE ENGINEERING",
             "session": "Session 1",
             "date": "2026-09-30",
             "duration": 60,

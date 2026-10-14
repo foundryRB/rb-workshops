@@ -1,4 +1,4 @@
-# vf-workshops - the app's CSD-INTENT-01 claims (REF-CSD.md section 3).
+# rb-workshops - the app's CSD-INTENT-01 claims (REF-CSD.md section 3).
 #
 # INT-WORKSHOPS-001 is the walking skeleton's shipped claim and stays
 # active and unrevved: its statement is still true of the engine's browser
@@ -33,8 +33,8 @@ INT-WORKSHOPS-002:
     version: 1.0.0
     status: active
     statement: "The engine is installed on the Foundry under the slug
-        vf-workshops: its browser surface answers at the app's own hostname
-        and its docs site serves under /apps/vf-workshops."
+        rb-workshops: its browser surface answers at the app's own hostname
+        and its docs site serves under /apps/rb-workshops."
     rationale: "ENG-001 is a delivered-and-reachable fact, not a repo fact.
         The app-repo contract half of ARCH-002 is attested operationally by
         the shared CI conformance suite, which owns those checks in the ci
@@ -87,9 +87,9 @@ INT-WORKSHOPS-005:
         serve the dataset, export the standalone artifact, land a capture - is
         reachable through the engine's own doors, so producing a runnable
         workshop requires no standalone scaffolding step."
-    rationale: "ENG-003 is the managed-path claim: vf-workshops replaces
+    rationale: "ENG-003 is the managed-path claim: rb-workshops replaces
         bootstrap-workshop as the way a workshop is produced, the way
-        vf-library replaced standalone flyers."
+        rb-library replaced standalone flyers."
     derived_from: [ENG-003]
     test:
         scope: e2e
@@ -106,7 +106,7 @@ INT-WORKSHOPS-006:
         stays retrievable at its own revision number, and no write path
         updates or deletes a stored revision."
     rationale: "STORE-001's append-only guarantee is the shelf principle
-        vf-library established. The falsifiable form is that a write path
+        rb-library established. The falsifiable form is that a write path
         that mutates a stored revision does not exist."
     derived_from: [STORE-001]
     test:
@@ -314,7 +314,7 @@ INT-WORKSHOPS-018:
     statement: "Publishing an export writes it to the git-backed home at the
         configured path and leaves the session store byte-unchanged: a publish
         writes no revision, capture or run row."
-    rationale: "EXP-003, the vf-library principle that publish exports and
+    rationale: "EXP-003, the rb-library principle that publish exports and
         never mutates the store. The store-unchanged half is the one a build
         drops silently, so it is stated in the claim."
     derived_from: [EXP-003]
@@ -417,7 +417,7 @@ INT-WORKSHOPS-024:
     version: 1.0.0
     status: active
     statement: "A realm-local test user signs in to the engine's browser
-        surface through the deployed vf-workshops realm and reaches the
+        surface through the deployed rb-workshops realm and reaches the
         shelf."
     rationale: "REF-Delivery.md section 4a: a priced identity realm prices a
         positive sign-in claim, one per shipped shell, attested against the
@@ -471,12 +471,13 @@ INT-WORKSHOPS-026:
     criticality: high
 
 INT-WORKSHOPS-027:
-    version: 1.1.0
+    version: 2.0.0
     status: active
-    statement: "The Vodafone Portugal Digital type roles are applied at their pinned
-        uses: the self-hosted Vodafone face on session titles, activity names, prose and UI;
-        the Cascadia Code, Consolas, monospace system stack on ids, revisions,
-        offsets, timeboxes and checksums. The Vodafone face is served beside the app.
+    statement: "The RB Software Engineering type roles are applied at their pinned
+        uses: the system sans stack (-apple-system, SF Pro Display, Helvetica Neue,
+        Segoe UI, Arial) on session titles, activity names, prose and UI; the
+        Cascadia Code, Consolas, monospace system stack on ids, revisions,
+        offsets, timeboxes and checksums. No font is fetched from another host.
         The embedded workshop artifact's
         own document is out of scope: it is the canonical renderer's, and it
         keeps that renderer's own font host."

@@ -19,13 +19,13 @@ def test_a_publish_at_any_other_ref_is_refused_with_no_connection() -> None:
     publisher = GitHubHomePublisher(
         "org/repo", "home", "workshops/{session}/{revision}/", "token", transport_factory=_NoNetwork()
     )
-    for ref in ("main", "deploy-adf", "delivery/2026-08-25", "home2", ""):
+    for ref in ("main", "deploy-rb", "delivery/2026-08-25", "home2", ""):
         with pytest.raises(HomeRefRefused):
             publisher.publish({"a.html": b"x"}, "feat(home): x", ref)
 
 
 @intent("INT-WORKSHOPS-030")
 def test_the_home_ref_itself_can_never_be_a_release_or_delivery_ref() -> None:
-    for ref in ("main", "master", "deploy-adf", "delivery/2026-08-25", ""):
+    for ref in ("main", "master", "deploy-rb", "delivery/2026-08-25", ""):
         with pytest.raises(HomeRefRefused):
             GitHubHomePublisher("org/repo", ref, "p/", "token", transport_factory=_NoNetwork())

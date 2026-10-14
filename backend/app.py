@@ -34,7 +34,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             yield
         container.close()
 
-    app = FastAPI(title="vf-workshops", version=__version__, lifespan=lifespan)
+    app = FastAPI(title="rb-workshops", version=__version__, lifespan=lifespan)
     app.state.container = container
     install_auth(app, settings)
     install_error_handlers(app)

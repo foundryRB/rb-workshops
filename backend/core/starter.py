@@ -12,7 +12,7 @@ def starter_dataset(title: str, session_id: str, date: str) -> dict[str, Any]:
         "meta": {
             "id": session_id,
             "title": title,
-            "eyebrow": "DIGITAL ENGINEERING",
+            "eyebrow": "SOFTWARE ENGINEERING",
             "session": "Session 1",
             "date": date,
             "duration": 15,

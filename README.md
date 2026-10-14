@@ -1,4 +1,4 @@
-# vf-workshops
+# rb-workshops
 
 The workshops engine: typed working-session instruments (REF-Workshop), stored and versioned, authored and run in a browser with no agent, exported as the byte-identical standalone HTML the canonical `bootstrap-workshop` renderer produces, and published to a git-backed home. One application core behind one inbound port set, three doors over it: the UI, the HTTP API and the MCP door.
 
@@ -31,7 +31,7 @@ Tests: `pytest tests` (a real PostgreSQL, never skipped), `cd frontend && npm te
 - `tests/` - pytest suites (unit and integration) carrying the intent markers
 - `devops/` - the app and smoke images, the compose file that is the released-image manifest, the promotion contract
 - `k8s/` - the Helm chart: the app with its oauth2-proxy sidecar, the docs server, the machine-door key mint, the smoke Job; `secrets/*.env.example` for every out-of-band secret
-- `docs/` - the Starlight site served under `/apps/vf-workshops`: the brand page, the modules, the flows, the operations guides, the decisions
+- `docs/` - the Starlight site served under `/apps/rb-workshops`: the brand page, the modules, the flows, the operations guides, the decisions
 - `renderer.lock` - the pinned sha256 of the canonical renderer
 - `intent.yaml` - the app's CSD-INTENT-01 claims
 
