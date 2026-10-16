@@ -4,10 +4,17 @@
 # (ADR-008, platform ADR-047). It provisions the realm-local test user at its
 # own boot, runs the suite against the public hostname, and publishes only the
 # verdict. Pinned to the browser build the suite was written against.
-FROM mcr.microsoft.com/playwright:v1.63.0-noble
+# Install the (pure JavaScript) dependencies on the runner's own architecture:
+# Node under QEMU emulation crashes. The browsers come from the base image.
+FROM --platform=$BUILDPLATFORM node:22 AS deps
 WORKDIR /suite
 COPY e2e/package.json e2e/package-lock.json ./
-RUN npm ci --no-audit --no-fund
+RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci --no-audit --no-fund
+
+FROM mcr.microsoft.com/playwright:v1.63.0-noble
+WORKDIR /suite
+COPY --from=deps /suite/node_modules ./node_modules
+COPY e2e/package.json e2e/package-lock.json ./
 COPY e2e/ ./
 ENV CI=1
 CMD ["node", "deployed/run-smoke.mjs"]

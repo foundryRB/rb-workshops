@@ -28,7 +28,7 @@ jobs:
         # A fork has no access to this org's ARC scale set, so its jobs would queue
         # forever; a fork falls back to a GitHub-hosted runner while our runs stay on
         # ARC (foundry-platform ADR-037 governs our runs, not a fork's).
-        runs-on: ${{ github.event.repository.fork && 'ubuntu-latest' || 'arc-dind' }}
+        runs-on: ${{ 'ubuntu-latest' }}
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-python@v5
@@ -42,7 +42,7 @@ jobs:
               run: csd-intent .
     pytest:
         # The store-backed suites need a real PostgreSQL: a store-less test fails, it never skips.
-        runs-on: ${{ github.event.repository.fork && 'ubuntu-latest' || 'arc-dind' }}
+        runs-on: ${{ 'ubuntu-latest' }}
         services:
             postgres:
                 image: postgres:16
@@ -73,7 +73,7 @@ jobs:
     vitest:
         # frontend/'s own suite (the capture bridge, the brand asset), and the
         # check that app/ is the build of the committed source and not a stale bundle.
-        runs-on: ${{ github.event.repository.fork && 'ubuntu-latest' || 'arc-dind' }}
+        runs-on: ${{ 'ubuntu-latest' }}
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -89,7 +89,7 @@ jobs:
     playwright:
         # The self-contained e2e claims, against the app's own stack (the built
         # document in app/, the backend, a PostgreSQL service), one project, Chromium.
-        runs-on: ${{ github.event.repository.fork && 'ubuntu-latest' || 'arc-dind' }}
+        runs-on: ${{ 'ubuntu-latest' }}
         services:
             postgres:
                 image: postgres:16
@@ -134,7 +134,7 @@ jobs:
                   retention-days: 7
     docs:
         # The docs site's vitest bundle (docs/tests/), attesting the STARLIGHT claims.
-        runs-on: ${{ github.event.repository.fork && 'ubuntu-latest' || 'arc-dind' }}
+        runs-on: ${{ 'ubuntu-latest' }}
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4

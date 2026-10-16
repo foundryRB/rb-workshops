@@ -17,6 +17,7 @@ jobs:
         with:
             # The app's name is its own fact: the repository carries the organisation's prefix.
             app-name: rb-workshops
+            runner: ubuntu-latest
         permissions:
             contents: write
             packages: write

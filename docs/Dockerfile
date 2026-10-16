@@ -2,7 +2,8 @@
 # The docs image (rb-workshops-docs): built like any other image (CI), served by
 # nginx under DOCS_BASE so the portal's no-rewrite route resolves
 # (INT-FOUNDRY-018).
-FROM node:22-alpine AS build
+# Static output is arch-independent: build natively, skip QEMU emulation.
+FROM --platform=$BUILDPLATFORM node:22-alpine AS build
 ARG DOCS_BASE=/
 WORKDIR /app
 COPY package.json package-lock.json ./
