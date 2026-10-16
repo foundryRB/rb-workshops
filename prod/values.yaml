@@ -26,7 +26,7 @@ rb-workshops:
       tag: 1.0.2
     docs:
       repository: ghcr.io/foundryrb/rb-workshops-docs
-      tag: 1.0.1
+      tag: 1.0.2
     smoke:
       repository: ghcr.io/foundryrb/rb-workshops-smoke
-      tag: 1.0.1
+      tag: 1.0.2
