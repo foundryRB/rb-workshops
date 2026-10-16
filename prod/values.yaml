@@ -1,0 +1,39 @@
+# Per-install values. Keys here are THIS install's own facts, pinned
+# explicitly: the app chart's defaults belong to whichever install it was
+# authored against, and an omitted key inherits them silently.
+# Sign-in goes through this install's rb-workshops realm (granted in teams/rb-workshops);
+# the database is this install's shared cluster (granted in teams/rb-workshops too).
+rb-workshops:
+  host: rb-workshops.rb-foundry.com
+  auth:
+    oidc:
+      enabled: true
+      issuer: https://keycloak.rb-foundry.com/realms/rb-workshops
+      clientId: rb-workshops
+      existingSecret: keycloak-rb-workshops
+  database:
+    enabled: true
+    host: shared-rw.databases.svc.cluster.local
+    port: 5432
+    name: rb-workshops
+    user: rb-workshops
+    existingSecret: pg-app-rb-workshops
+  events:
+    enabled: false
+  # The playbook-studio door the renderer template is fetched from; its Basic
+  # credential is the optional Secret rb-workshops-renderer-source.
+  renderer:
+    url: https://playbook-studio.rb-foundry.com/mcp
+    existingSecret: rb-workshops-renderer-source
+  smoke:
+    enabled: true
+  images:
+    app:
+      repository: ghcr.io/foundryrb/rb-workshops-app
+      tag: 1.0.0
+    docs:
+      repository: ghcr.io/foundryrb/rb-workshops-docs
+      tag: 1.0.0
+    smoke:
+      repository: ghcr.io/foundryrb/rb-workshops-smoke
+      tag: 1.0.0

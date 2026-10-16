@@ -1,0 +1,9 @@
+apiVersion: v2
+name: rb-workshops
+description: prod environment pin for rb-workshops (ADR-025 deploy branch).
+type: application
+version: 1.0.0
+dependencies:
+  - name: rb-workshops
+    version: 1.0.0
+    repository: oci://ghcr.io/foundryrb/charts
