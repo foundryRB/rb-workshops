@@ -23,10 +23,10 @@ rb-workshops:
   images:
     app:
       repository: ghcr.io/foundryrb/rb-workshops-app
-      tag: 1.0.2
+      tag: 1.0.3
     docs:
       repository: ghcr.io/foundryrb/rb-workshops-docs
-      tag: 1.0.2
+      tag: 1.0.3
     smoke:
       repository: ghcr.io/foundryrb/rb-workshops-smoke
-      tag: 1.0.2
+      tag: 1.0.3
